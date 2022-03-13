@@ -235,7 +235,7 @@ initial.values()
 
 ```
 $phi
-[1] 0.4121227
+[1] 0.5230354
 ```
 
 
@@ -296,11 +296,11 @@ str(mcmc.output)
 
 ```
 List of 2
- $ chain1: num [1:4000, 1] 0.333 0.333 0.269 0.269 0.377 ...
+ $ chain1: num [1:4000, 1] 0.404 0.347 0.347 0.275 0.275 ...
   ..- attr(*, "dimnames")=List of 2
   .. ..$ : NULL
   .. ..$ : chr "phi"
- $ chain2: num [1:4000, 1] 0.385 0.385 0.385 0.399 0.399 ...
+ $ chain2: num [1:4000, 1] 0.258 0.258 0.26 0.26 0.427 ...
   ..- attr(*, "dimnames")=List of 2
   .. ..$ : NULL
   .. ..$ : chr "phi"
@@ -317,19 +317,19 @@ head(mcmc.output$chain1)
 
 ```
            phi
-[1,] 0.3328166
-[2,] 0.3328166
-[3,] 0.2692843
-[4,] 0.2692843
-[5,] 0.3769413
-[6,] 0.3798465
+[1,] 0.4038563
+[2,] 0.3469721
+[3,] 0.3469721
+[4,] 0.2752558
+[5,] 0.2752558
+[6,] 0.2752558
 ```
 
 ---
 ## Explore MCMC outputs
 
 .center.nogap[
-![](nimble_files/figure-html/unnamed-chunk-20-1.svg)&lt;!-- --&gt;
+![](index_files/figure-html/unnamed-chunk-20-1.svg)&lt;!-- --&gt;
 ]
 
 ---
@@ -343,7 +343,7 @@ MCMCsummary(mcmc.output, round = 2)
 
 ```
     mean   sd 2.5%  50% 97.5% Rhat n.eff
-phi 0.34 0.06 0.23 0.34  0.46 1.01  1572
+phi 0.34 0.06 0.22 0.33  0.46    1  1849
 ```
 
 ---
@@ -363,7 +363,7 @@ MCMCtrace(mcmc.output,
 .pull-right[
 
 .center.nogap[
-![](nimble_files/figure-html/unnamed-chunk-23-1.svg)&lt;!-- --&gt;
+![](index_files/figure-html/unnamed-chunk-23-1.svg)&lt;!-- --&gt;
 ]
 ]
 
@@ -390,7 +390,7 @@ MCMCtrace(mcmc.output,
 .pull-right[
 
 .center.nogap[
-![](nimble_files/figure-html/unnamed-chunk-25-1.svg)&lt;!-- --&gt;
+![](index_files/figure-html/unnamed-chunk-25-1.svg)&lt;!-- --&gt;
 ]
 ]
 
