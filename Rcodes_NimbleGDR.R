@@ -1,6 +1,6 @@
 # ---- R codes associated with NIMBLE workshop for GDR Ecostat 2022 
 ## Olivier Gimenez, Maud Quéroué, Valentin Lauret
-# slides at https://oliviergimenez.github.io/nimble-workshop/#1
+# slides at https://oliviergimenez.github.io/nimble-workshop/
 
 # ---- load packages ----
 library(tidyverse)
@@ -198,20 +198,20 @@ model <- nimbleCode({
 
 ## The rest of the workflow remain the same 
 
-#    my.data <- list(survived = 19, released = 57)
-#    parameters.to.save <- c("theta", "lifespan")
-#    initial.values <- function() list(theta = runif(1,0,1))
-#    n.iter <- 5000
-#    n.burnin <- 1000
-#    n.chains <- 2
-#    mcmc.output <- nimbleMCMC(code = model,
-#                              data = my.data,
-#                              inits = initial.values,
-#                              monitors = parameters.to.save,
-#                              niter = n.iter,
-#                              nburnin = n.burnin,
-#                              nchains = n.chains)
-#    MCMCsummary(object = mcmc.output, round = 2)
+my.data <- list(survived = 19, released = 57)
+parameters.to.save <- c("theta", "lifespan")
+initial.values <- function() list(theta = runif(1,0,1))
+n.iter <- 5000
+n.burnin <- 1000
+n.chains <- 2
+mcmc.output <- nimbleMCMC(code = model,
+                          data = my.data,
+                          inits = initial.values,
+                          monitors = parameters.to.save,
+                          niter = n.iter,
+                          nburnin = n.burnin,
+                          nchains = n.chains)
+MCMCsummary(object = mcmc.output, round = 2)
 
 
 # ---- Programming: CALLING R/C++ FUNCTIONS ----
@@ -243,20 +243,20 @@ model <- nimbleCode({
 
 ## The rest of the workflow remain the same 
 
-#    my.data <- list(survived = 19, released = 57)
-#    parameters.to.save <- c("theta", "lifespan")
-#    initial.values <- function() list(theta = runif(1,0,1))
-#    n.iter <- 5000
-#    n.burnin <- 1000
-#    n.chains <- 2
-#    mcmc.output <- nimbleMCMC(code = model,
-#                              data = my.data,
-#                              inits = initial.values,
-#                              monitors = parameters.to.save,
-#                              niter = n.iter,
-#                              nburnin = n.burnin,
-#                              nchains = n.chains)
-#    MCMCsummary(object = mcmc.output, round = 2)
+my.data <- list(survived = 19, released = 57)
+parameters.to.save <- c("theta", "lifespan")
+initial.values <- function() list(theta = runif(1,0,1))
+n.iter <- 5000
+n.burnin <- 1000
+n.chains <- 2
+mcmc.output <- nimbleMCMC(code = model,
+                          data = my.data,
+                          inits = initial.values,
+                          monitors = parameters.to.save,
+                          niter = n.iter,
+                          nburnin = n.burnin,
+                          nchains = n.chains)
+MCMCsummary(object = mcmc.output, round = 2)
 
 
 # ---- USER DEFINED DISTRIBUTIONS ----
@@ -309,20 +309,20 @@ rmybinom(n = 1, size = 5, prob = 0.8)
 
 ## usual workflow
 
-    model <- nimbleCode({
-     # likelihood
-     survived ~ dmybinom(prob = theta, size = released)
-     # prior
-     theta ~ dunif(0, 1)
-    })
+model <- nimbleCode({
+  # likelihood
+  survived ~ dmybinom(prob = theta, size = released)
+  # prior
+  theta ~ dunif(0, 1)
+})
 
-#    mcmc.output <- nimbleMCMC(code = model,
-#     data = my.data,
-#     inits = initial.values,
-#     niter = n.iter,
-#     nburnin = n.burnin,
-#     nchains = n.chains)
-#    MCMCsummary(mcmc.output)
+mcmc.output <- nimbleMCMC(code = model,
+                          data = my.data,
+                          inits = initial.values,
+                          niter = n.iter,
+                          nburnin = n.burnin,
+                          nchains = n.chains)
+MCMCsummary(mcmc.output)
 
 
 # ---- DETAILED NIMBLE WORKFLOW ----
@@ -356,11 +356,13 @@ survival$getNodeNames()
 survival$theta
 survival$survived
 survival$lifespan 
-# this is -1/log(0.5)
+# this is 
+-1/log(0.5)
 
 ## calculate the log-likelihood at the initial value for theta
-# this is dbinom(x = 19, size = 57, prob = 0.5, log = TRUE)
 survival$calculate()
+# this is 
+dbinom(x = 19, size = 57, prob = 0.5, log = TRUE)
 
 ## 2. Compile Nimble
 #  generate C++ code that  can be used in R 
