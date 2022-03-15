@@ -32,6 +32,12 @@ knitr::include_graphics("img/nimble-icon.png")
 ```
 
 ---
+
+```{r nimbledef, echo = FALSE, fig.align="center", out.width="80%"}
+knitr::include_graphics("img/definition.png")
+```
+
+---
 # What is NIMBLE?
 
 --
@@ -48,11 +54,11 @@ knitr::include_graphics("img/nimble-icon.png")
 
 --
 
-+ Extension of BUGS language: Additional syntax, call existing R functions, or write your own functions/distributions. 
++ Extension of BUGS language: Additional syntax, call to existing R functions, and implementation of your own functions/distributions. 
 
 --
 
-+ Configure MCMC samplers: Change defaults, write your own algorithms. 
++ Flexibility in MCMC samplers config: Change defaults, write your own algorithms. 
 
 --
 
@@ -68,6 +74,15 @@ knitr::include_graphics("img/nimble-icon.png")
 + A team of friendly, active and helpful developers: de Valpine, Paciorek, Turek.
 
 ---
+# This workshop
+
++ Getting started with NIMBLE
+
++ Programming and coding functions/distributions
+
++ Choosing and coding MCMC samplers
+
+---
 # Example
 
 Say we capture, mark and release $n = 57$ animals at the beginning of a winter, out of which we recapture $y = 19$ animals alive:
@@ -79,9 +94,9 @@ n <- 57 # nb of attempts
 Assuming all animals are independent of each other and have the same survival probability $\theta$, then $y$ the number of alive animals at the end of the winter is binomial. Using a uniform prior for survival, we have:
 
 \begin{align*}
-   z &\sim \text{Binomial}(n, \theta) &\text{[likelihood]}
+   y &\sim \text{Binomial}(n, \theta) &\text{[likelihood]}
    \\
-  \theta &\sim \text{Uniform}(0, 1) &\text{[prior for }\phi \text{]} \\
+  \theta &\sim \text{Uniform}(0, 1) &\text{[prior for }\theta \text{]} \\
 \end{align*}
 
 We'd like to estimate winter survival $\theta$.
@@ -117,7 +132,10 @@ class: center, middle
 ---
 # 1. Build model
 
-Specify binomial likelihood and uniform prior on survival probability `theta`. We use the `nimbleCode()` function and wrap code within curly brackets:
++ Specify binomial likelihood and uniform prior on survival probability `theta`. 
+
++ We use the `nimbleCode()` function and wrap code within curly brackets:
+
 ```{r}
 model <- nimbleCode({
   # likelihood
@@ -130,6 +148,8 @@ model <- nimbleCode({
 })
 ```
 
++ It does not matter in what order you write each line of code, NIMBLE uses a declarative language (vs imperative language).
+
 ---
 # 1. Build model
 
@@ -141,9 +161,11 @@ model
 ---
 # 1. Build model
 
-+ The most common distributions are available in NIMBLE. Among others, we will use later in the book `dbeta`, `dmultinom` and `dnorm`. If you cannot find what you need in NIMBLE, you can write your own distribution (more soon).
++ The most common distributions are available in NIMBLE. 
 
-+ It does not matter in what order you write each line of code, NIMBLE uses what is called a declarative language for building models. In brief, you write code that tells NIMBLE what you want to achieve, and not how to get there. In contrast, an imperative language requires that you write what you want your program to do step by step.
++ Among others, `dunif`, `dbeta`, `dmultinom` and `dnorm`. 
+
++ If you cannot find what you need in NIMBLE, you can write your own distribution (more soon).
 
 ---
 # 2. Read in data
@@ -205,7 +227,12 @@ initial.values()
 ---
 # 5. Provide MCMC details
 
-You need to tell NIMBLE the number of chains to run, say `n.chain`, how long the burn-in period should be, say `n.burnin`, and the number of iterations following the burn-in period to be used for posterior inference. In NIMBLE, you specify the total number of iterations, say `n.iter`, so that the number of posterior samples per chain is `n.iter - n.burnin`.
++ You need to tell NIMBLE:
+      + The number of chains to run, say `n.chain`
+      + How long the burn-in period should be, say `n.burnin`
+      + The total number of iterations, say `n.iter`
+      
++ In NIMBLE, the number of posterior samples per chain is `n.iter - n.burnin` 
 
 ```{r}
 n.iter <- 5000
@@ -221,7 +248,9 @@ class: center, middle
 ---
 # Run NIMBLE
 
-We now sample in the posterior distribution of model parameters using MCMC simulations. This is accomplished using function `nimbleMCMC()`: 
++ We now sample in the posterior distribution of model parameters using MCMC simulations. 
+
++ This is accomplished using function `nimbleMCMC()`: 
 ```{r, warning=FALSE, message=FALSE, eval = FALSE}
 mcmc.output <- nimbleMCMC(code = model,
                           data = my.data,
@@ -251,15 +280,17 @@ class: center, middle
 ---
 # Structure
 
-Now let's inspect what we have in `mcmc.output`: 
++ Now let's inspect what we have in `mcmc.output`: 
+
 ```{r}
 str(mcmc.output)
 ```
 
++ The R object `mcmc.output` is a list with two components, one for each MCMC chain. 
+
 ---
 # Dimensions
 
-The R object `mcmc.output` is a list with three components, one for each MCMC chain. Let's have a look to `chain1` for example:
 ```{r}
 dim(mcmc.output$chain1)
 ```
@@ -267,7 +298,6 @@ dim(mcmc.output$chain1)
 ---
 # Return values
 
-The R object `mcmc.output` is a list with two components, one for each MCMC chain. Let's have a look to `chain1` for example:
 ```{r}
 head(mcmc.output$chain1)
 ```
@@ -275,7 +305,7 @@ head(mcmc.output$chain1)
 ---
 # Compute posterior summaries
 
-From there, you can compute the posterior mean of `theta`:
+You can compute the posterior mean of `theta`:
 ```{r}
 mean(mcmc.output$chain1[,'theta'])
 ```
@@ -292,7 +322,6 @@ quantile(mcmc.output$chain1[,'theta'], probs = c(2.5, 97.5)/100)
 ```{r, echo = FALSE, fig.width = 7.5, fig.asp = 0.618, dev = "svg", message=FALSE, warning=FALSE}
 mcmc.output %>%
   as_tibble() %>%
-  janitor::clean_names() %>%
   ggplot() + 
   geom_histogram(aes(x = chain1[,"theta"]), color = "white") + 
   labs(x = "survival probability")
@@ -305,7 +334,6 @@ mcmc.output %>%
 ```{r, eval = FALSE, fig.width = 7.5, fig.asp = 0.618, dev = "svg", message=FALSE, warning=FALSE}
 mcmc.output %>%
   as_tibble() %>%
-  janitor::clean_names() %>%
   ggplot() + 
   geom_histogram(aes(x = chain1[,"theta"]), color = "white") + 
   labs(x = "survival probability")
@@ -336,12 +364,9 @@ MCMCsummary(object = mcmc.output, round = 2)
 # Visualize
 
 A caterpillar plot to visualise posterior distribution of `theta` with `MCMCplot()`:
-.center.nogap[
-```{r, eval = FALSE, fig.width = 7.5, fig.asp = 0.618, dev = "svg", message=FALSE, warning=FALSE}
-MCMCplot(object = mcmc.output, 
-         params = 'theta')
+```{r, eval = FALSE}
+MCMCplot(object = mcmc.output, params = 'theta')
 ```
-]
 
 ---
 # Visualize
@@ -369,18 +394,20 @@ MCMCtrace(object = mcmc.output,
 # Trace and posterior density
 
 The trace and posterior density of theta can be obtained with `MCMCtrace()`:
+.center.nogap[
 ```{r, echo = FALSE, fig.width = 7.5, fig.asp = 0.618, dev = "svg", message=FALSE, warning=FALSE}
 MCMCtrace(object = mcmc.output,
           pdf = FALSE, # no export to PDF
           ind = TRUE, # separate density lines per chain
           params = "theta")
 ```
+]
 
 ---
 # Diagnostics of convergence
 
 You can also add diagnostics of convergence:
-```{r, eval = FALSE, fig.width = 7.5, fig.asp = 0.618, dev = "svg", message=FALSE, warning=FALSE}
+```{r, eval = FALSE}
 MCMCtrace(object = mcmc.output,
           pdf = FALSE,
           ind = TRUE,
@@ -393,6 +420,7 @@ MCMCtrace(object = mcmc.output,
 # Diagnostics of convergence
 
 You can also add diagnostics of convergence:
+.center.nogap[
 ```{r, echo = FALSE, fig.width = 7.5, fig.asp = 0.618, dev = "svg", message=FALSE, warning=FALSE}
 MCMCtrace(object = mcmc.output,
           pdf = FALSE,
@@ -401,6 +429,7 @@ MCMCtrace(object = mcmc.output,
           n.eff = TRUE, # add eff sample size
           params = "theta")
 ```
+]
 
 ---
 class: center, middle
@@ -408,16 +437,24 @@ class: center, middle
 # Derived quantities
 
 ---
-# Compute lifespan
+# Compute lifespan (1)
 
-We calculated lifespan directly in our model with `lifespan <- -1/log(theta)`. But you can also calculate this quantity from outside NIMBLE. In our example, all you need is samples from the posterior distribution of `theta`, which we pool between the three chains with:
++ We calculated lifespan directly in our model with `lifespan <- -1/log(theta)`. 
+
++ But you can also calculate this quantity from outside NIMBLE. 
+
++ In our example, all you need is samples from the posterior distribution of `theta`, which we pool between the three chains with:
+
 ```{r}
 theta_samples <- c(mcmc.output$chain1[,'theta'], 
                    mcmc.output$chain2[,'theta'],
                    mcmc.output$chain3[,'theta'])
 ```
 
-To get samples from the posterior distribution of lifespan, we apply the function to calculate lifespan to the samples from the posterior distribution of survival:
+---
+# Compute lifespan (2)
+
++ To get samples from the posterior distribution of lifespan, we apply the function to calculate lifespan to the samples from the posterior distribution of survival:
 ```{r}
 lifespan <- -1/log(theta_samples)
 ```
@@ -425,7 +462,7 @@ lifespan <- -1/log(theta_samples)
 ---
 # Numerical summaries
 
-As usual then, you can calculate the posterior mean and 95% credible interval:
+Then, as usual, you can calculate posterior mean and 95% credible interval:
 ```{r}
 mean(lifespan)
 quantile(lifespan, probs = c(2.5, 97.5)/100)
@@ -435,7 +472,7 @@ quantile(lifespan, probs = c(2.5, 97.5)/100)
 # Visualize
 
 You can also visualise the posterior distribution of lifespan:
-```{r, eval = FALSE, fig.width = 7.5, fig.asp = 0.618, dev = "svg", message=FALSE, warning=FALSE}
+```{r, eval = FALSE}
 lifespan %>%
   as_tibble() %>%
   ggplot() +
@@ -446,7 +483,7 @@ lifespan %>%
 ---
 # Visualize
 
-You can also visualise the posterior distribution of lifespan:
+.center.nogap[
 ```{r, echo = FALSE, fig.width = 7.5, fig.asp = 0.618, dev = "svg", message=FALSE, warning=FALSE}
 lifespan %>%
   as_tibble() %>%
@@ -454,6 +491,7 @@ lifespan %>%
   geom_histogram(aes(x = value), color = "white") +
   labs(x = "lifespan")
 ```
+]
 
 ---
 ```{r simple-workflow, echo = FALSE, fig.align="center", out.width="40%"}
@@ -464,16 +502,16 @@ knitr::include_graphics("img/simpleNIMBLEworkflow.png")
 ---
 class: center, middle
 
-# NIMBLE is more than just another MCMC engine
+## NIMBLE is more than just another MCMC engine
 
 ---
 # NIMBLE is a programming environment
 
-+ Full control when building models and estimating parameters. 
++ Allows full control when building models and estimating parameters. 
 
-+ NIMBLE allows you to write your own functions and distributions to build models, and to choose alternative MCMC samplers or code new ones.
++ Allows you to write your own functions and distributions to build models, and to choose alternative MCMC samplers or code new ones.
 
-+ Here, we're gonna tell you more about programming, and NIMBLE detailed workflow.
++ Here, we're gonna tell you more about programming, and show you a NIMBLE detailed workflow.
 
 ---
 class: middle center
@@ -491,7 +529,7 @@ class: center, middle
 
 + NIMBLE provides `nimbleFunctions` for programming. 
 
-+ A `nimbleFunction` is like an R function, plus it can be compiled for faster computation. 
++ A `nimbleFunction` is like an R function, which can be compiled for faster computation. 
 
 ---
 # Example
@@ -605,7 +643,7 @@ myfunction <- function(x) {
 ---
 # R function example
 
-Now wrap this function using `nimbleRcall()` or `nimbleExternalCall()` for a C or C++ function:
+Just wrap this function using `nimbleRcall()` (`nimbleExternalCall()` for a C/C++ function):
 ```{r}
 Rmyfunction <- 
   nimbleRcall(prototype = function(x = double(0)){}, 
@@ -659,9 +697,15 @@ MCMCsummary(object = mcmc.output, round = 2)
 ---
 # Calling external R/C++ functions
 
-+ Evaluating an R function from within NIMBLE slows MCMC sampling down, but if you can live with it, the cost is easily offset by the convenience of being able to use existing R functions. 
++ Evaluating an R function from within NIMBLE slows MCMC sampling down.
 
-+ Another advantage of using `nimbleRcall()` (or `nimbleExternalCall()`) is that you can keep large objects out of your model, so that NIMBLE does not have to handle them in MCMC sampling. These objects should be constants and not change when you run NIMBLE. Letting R manipulating these objects will save you time, usually more than the time you lose by calling R from within NIMBLE.
++ But if you can live with it, the cost is easily offset by the convenience of being able to use existing R functions. 
+
++ Another advantage of using `nimbleRcall()` (or `nimbleExternalCall()`) is that you can keep large objects out of your model, so that NIMBLE does not have to handle them in MCMC sampling. 
+
++ These objects should be constants and not change when you run NIMBLE. 
+
++ Letting R manipulating these objects will save you time, usually more than the time you lose by calling R from within NIMBLE.
 
 ---
 class: center, middle
@@ -728,7 +772,7 @@ assign('rmybinom', rmybinom, .GlobalEnv)
 ```
 
 ---
-# Try the functions out
+# Try your functions out
 
 You can try out your function and simulate a random value from a binomial distribution with size 5 and probability 0.1: 
 ```{r}
@@ -741,7 +785,7 @@ rmybinom(n = 1, size = 5, prob = 0.8)
 ```
 
 ---
-### All set. You can run your workflow:
+### All set. You can proceed with your usual workflow now.
 
 ```{r eval = FALSE}
 model <- nimbleCode({
@@ -750,11 +794,7 @@ model <- nimbleCode({
  # prior
  theta ~ dunif(0, 1)
 })
-my.data <- list(released = 57, survived = 19)
-initial.values <- function() list(theta = runif(1,0,1))
-n.iter <- 5000
-n.burnin <- 1000
-n.chains <- 2
+...
 mcmc.output <- nimbleMCMC(code = model,
  data = my.data,
  inits = initial.values,
@@ -803,7 +843,7 @@ initial.values <- list(theta = 0.5)
 # 1. Create the model as an R object
 
 First step is to create the model as an R object (uncompiled model) with `nimbleModel()`:
-```{r}
+```{r message=FALSE, warning=FALSE}
 survival <- nimbleModel(code = model,
                         data = my.data,
                         inits = initial.values)
@@ -812,7 +852,7 @@ survival <- nimbleModel(code = model,
 ---
 # 1. Create the model as an R object
 
-You can look at its nodes:
+You can look at its components (or nodes):
 ```{r}
 survival$getNodeNames()
 ```
@@ -843,7 +883,7 @@ The ability in NIMBLE to access the nodes of your model and to evaluate the mode
 # 2. Compile model
 
 We compile the model with `compileNimble()`:
-```{r}
+```{r message=FALSE, warning=FALSE}
 Csurvival <- compileNimble(survival)
 ```
 
@@ -861,7 +901,7 @@ Csurvival$theta
 
 + This gives you a lot of flexibility at both steps. 
 
-+ For example, imagine you would like to fit your model with maximum likelihood, then you can do it by wrapping your model in an R function that gets the likelihood and maximise this function. 
++ For example, imagine you would like to fit your model with maximum likelihood. You can do it by wrapping your model in an R function that gets the likelihood and maximise this function. 
 
 ---
 ## NIMBLE can do maximum likelihood estimation
@@ -906,7 +946,7 @@ survivalConf <- configureMCMC(survival)
 
 + This steps tells you the nodes that are monitored by default, and the MCMC samplers than have been assigned to them. 
 
-+ Here `theta` is monitored, and samples from its posterior distribution are simulated with a random walk sampler similar to the Metropolis sampler.
++ Here `theta` is monitored, and samples from its posterior distribution are simulated with a random walk sampler.
 
 
 ---
@@ -921,19 +961,20 @@ survivalConf
 ---
 # 4. Create MCMC function
 
-We create a MCMC function with `buildMCMC()` and compile it with `compileNimble()`:
-```{r}
++ We create a MCMC function with `buildMCMC()` and compile it with `compileNimble()`:
+
+```{r message=FALSE, warning=FALSE}
 survivalMCMC <- buildMCMC(survivalConf)
 CsurvivalMCMC <- compileNimble(survivalMCMC, project = survival)
 ```
 
-Note that models and `nimbleFunctions` need to be compiled before they can be used to specify a project.
++ Note that models and `nimbleFunctions` need to be compiled before they can be used to specify a project.
 
 ---
 # 5. Run NIMBLE
 
 We run NIMBLE with `runMCMC()`:
-```{r cache = F}
+```{r message=FALSE, warning=FALSE}
 n.iter <- 5000
 n.burnin <- 1000
 samples <- runMCMC(mcmc = CsurvivalMCMC, 
@@ -981,7 +1022,7 @@ class: center, middle
 survivalConf$printSamplers()
 ```
 
-+ NIMBLE implements many samplers, and a list is available with `?samplers`.
++ NIMBLE implements many samplers; A list is available with `?samplers`.
 
 ---
 ## Change default samplers
@@ -1077,7 +1118,7 @@ class: center, middle
 + Sometimes it is useful to run your MCMC chains a little bit longer to improve convergence.
 
 + Re-starting from previous run, you can use:
-```{r}
+```{r message=FALSE, warning=FALSE}
 niter_ad <- 6000
 CsurvivalMCMC$run(niter_ad, reset = FALSE)
 ```
