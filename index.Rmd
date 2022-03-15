@@ -86,6 +86,8 @@ knitr::include_graphics("img/definition.png")
 
 + [R codes on GitHub](https://github.com/oliviergimenez/nimble-workshop/blob/master/Rcodes_NimbleGDR.R) for easier manipulation 
 
++ Slides available in PDF format from [there](https://github.com/oliviergimenez/nimble-workshop/blob/master/IntroductionNIMBLE.pdf).
+
 ---
 # Example
 
