@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>Introduction to NIMBLE</title>
+    <title>Introduction to NIMBLE </title>
     <meta charset="utf-8" />
     <meta name="author" content="Olivier Gimenez, Maud Quéroué, Valentin Lauret" />
     <script src="libs/header-attrs/header-attrs.js"></script>
@@ -12,22 +12,27 @@
     <textarea id="source">
 class: center, middle, title-slide
 
-# Introduction to NIMBLE
+# <p>Introduction to NIMBLE<br />
+<img src="img/nimble-icon.png" style="width:3in" /></p>
 ### Olivier Gimenez, Maud Quéroué, Valentin Lauret
-### last updated: 2022-03-15
+### last updated: 2022-03-16
 
 ---
 
 
 
 
-# What is NIMBLE?
+class: middle center
+background-color: black
 
-&lt;img src="img/nimble-icon.png" width="50%" style="display: block; margin: auto;" /&gt;
+![](img/what-is-nimble.gif)
+
 
 ---
+class: middle center
+background-color: white
 
-&lt;img src="img/definition.png" width="80%" style="display: block; margin: auto;" /&gt;
+![](img/definition.png)
 
 ---
 # What is NIMBLE?
@@ -252,7 +257,7 @@ initial.values()
 
 ```
 $theta
-[1] 0.9630224
+[1] 0.04221461
 ```
 
 ---
@@ -271,6 +276,13 @@ n.iter &lt;- 5000
 n.burnin &lt;- 1000
 n.chains &lt;- 2
 ```
+
+---
+class: middle center
+background-color: black
+
+![](img/fast.gif)
+
 
 ---
 class: center, middle
@@ -695,6 +707,13 @@ MCMCsummary(object = mcmc.output, round = 2)
 + To learn everything you need to know on writing `nimbleFunctions`, make sure to read chapter 11 of the NIMBLE manual at &lt;https://r-nimble.org/html_manual/cha-RCfunctions.html#cha-RCfunctions&gt;. 
 
 ---
+class: middle center
+background-color: black
+
+![](img/programming.gif)
+
+
+---
 class: center, middle
 
 # Programming: Calling R/C++ functions
@@ -791,6 +810,13 @@ MCMCsummary(object = mcmc.output, round = 2)
 class: center, middle
 
 # Programming: User-defined distributions
+
+---
+class: middle center
+background-color: black
+
+![](img/cooking.gif)
+
 
 ---
 # User-defined distributions
@@ -902,6 +928,14 @@ MCMCsummary(mcmc.output)
 class: center, middle
 
 # Detailed NIMBLE workflow
+
+
+---
+class: middle center
+background-color: black
+
+![](img/pop-the-hood2.gif)
+
 
 ---
 # Under the hood
@@ -1039,6 +1073,12 @@ Csurvival$theta
 + This gives you a lot of flexibility at both steps. 
 
 + For example, imagine you would like to fit your model with maximum likelihood. You can do it by wrapping your model in an R function that gets the likelihood and maximise this function. 
+
+---
+class: middle center
+background-color: black
+
+![](img/Mind-Blown.gif)
 
 ---
 ## NIMBLE can do maximum likelihood estimation
@@ -1302,6 +1342,13 @@ theta    0.3399162 0.3383379 0.06218938 0.2220439  0.467088
 &lt;https://oliviergimenez.github.io/banana-book/intronimble.html#user-defined-samplers&gt;
 
 ---
+class: middle center
+background-color: black
+
+![](img/time-for-some-magic.gif)
+
+
+---
 class: center, middle
 
 # Tips and tricks
@@ -1443,6 +1490,13 @@ class: center, middle
 + There are two workflows to run NIMBLE. In most situations, `nimbleMCMC()` will serve you well. There is detailed workflow if needed.
 
 + By having full control of the workflow, you can change default MCMC samplers and even write your own samplers.
+
+---
+class: middle center
+background-color: black
+
+![](img/thats-the-dream-himym.gif)
+
 
 ---
 ## Useful resources
