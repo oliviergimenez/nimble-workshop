@@ -84,7 +84,7 @@ background-color: white
 
 + Choosing and coding MCMC samplers
 
-+ Material from [a book in progress](https://oliviergimenez.github.io/banana-book/)
++ Material from [a book in progress](https://oliviergimenez.github.io/banana-book/), NIMBLE chapter is [here](https://github.com/oliviergimenez/nimble-workshop/blob/master/Overview_IntroductionNIMBLE.pdf)
 
 + [R codes on GitHub](https://github.com/oliviergimenez/nimble-workshop/blob/master/Rcodes_NimbleGDR.R) for easier manipulation 
 

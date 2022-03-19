@@ -1,5 +1,6 @@
 ---
 title: "Introduction to NIMBLE"
+subtitle: "Material from the book <br> [Bayesian Analysis of Capture-Recapture Data with Hidden Markov Models: Theory and Case Studies in R](https://oliviergimenez.github.io/banana-book/)"
 author: "Olivier Gimenez, Valentin Lauret & Maud Quéroué"
 date: "18/03/2022"
 output:
@@ -11,8 +12,7 @@ output:
 ## What is NIMBLE
 
 ```{r nimblelogo, message = FALSE, echo = FALSE, fig.align="center", out.width="50%", fig.cap = "Logo of the NIMBLE R package designed by Luke Larson."}
-setwd("C:/Users/queroue/Desktop/nimble-workshop")
-knitr::include_graphics(here::here("img","nimble-icon.png"))
+knitr::include_graphics("img/nimble-icon.png")
 ```
 
 NIMBLE stands for **N**umerical **I**nference for statistical **M**odels using **B**ayesian and **L**ikelihood **E**stimation. Briefly speaking, NIMBLE is an R package that implements for you MCMC algorithms to generate samples from the posterior distribution of model parameters. Freed from the burden of coding your own MCMC algorithms, you only have to specify a likelihood and priors to apply the Bayes theorem. To do so, NIMBLE uses a syntax very similar to the R syntax, which should make your life easier. This so-called BUGS language is also used by other programs like WinBUGS, OpenBUGS, and JAGS. 
@@ -27,7 +27,6 @@ To run NIMBLE, you will need to:
 3. Specify parameters you want to make inference about.   
 4. Pick initial values for parameters to be estimated (for each chain).   
 5. Provide MCMC details namely the number of chains, the length of the burn-in period and the number of iterations following burn-in.    
-
 
 First things first, let's not forget to load the `nimble` package ad the other packages useful for this workshop:
 ```{r, message = FALSE}
@@ -567,7 +566,7 @@ survival$calculate()
 # this is dbinom(x = 19, size = 57, prob = 0.5, log = TRUE)
 ```
 
-The ability in NIMBLE to access the nodes of your model and to evaluate the model likelihood can help you in identifying bugs in your code. For example, if we provide a negative initial value to `theta`, `survival$calculate()` returns `NA`.
+The ability in NIMBLE to access the nodes of your model and to evaluate the model likelihood can help you in identifying bugs in your code. For example, if we provide a negative initial value for `theta`, `survival$calculate()` returns `NA`:
 ```{r, warning = FALSE}
 survival <- nimbleModel(code = model,
                         data = my.data,
@@ -575,7 +574,7 @@ survival <- nimbleModel(code = model,
 survival$calculate()
 ```
 
-Other example : if there are more survived than released :
+As another example, if we convey in the data the information that more animals survived than were released, we'll get an infinity value for the log-likelood:
 ```{r, warning = FALSE, message = FALSE}
 my.data <- list(survived = 61, released = 57)
 initial.values <- list(theta = 0.5)
@@ -585,7 +584,8 @@ survival <- nimbleModel(code = model,
                         inits = initial.values)
 survival$calculate()
 ```
-Then, to check the model is correctly initialized and without bug in the code, we can check that `model$calculate()` returns a number and not `NA` or `-Inf`.
+
+As a check that the model is correctly initialized and that your code is without bugs, the call to `model$calculate()` should return a number and not `NA` or `-Inf`.
 
 ```{r, echo = FALSE}
 my.data <- list(survived = 19, released = 57)
